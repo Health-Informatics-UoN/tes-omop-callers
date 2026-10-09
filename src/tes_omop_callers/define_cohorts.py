@@ -1,6 +1,6 @@
 from typing import Literal
 
-from .base import ScriptArg
+from .base import OMOPScriptTask
 from .script_args import (
     ConceptSet,
     ConceptSetArg,
@@ -10,9 +10,7 @@ from .script_args import (
 )
 
 
-class DefineConceptCohort:
-    args: list[ScriptArg]
-
+class DefineConceptCohort(OMOPScriptTask):
     def __init__(
         self,
         cohort_name: str,
@@ -24,10 +22,11 @@ class DefineConceptCohort:
     ) -> None:
         self.script_path = "inst/scripts/defineConceptCohort.R"
         self.cohort_name = cohort_name
+        self.cohorts = [cohort_name]
         checked_concept_sets = [
             ConceptSet(name=k, concept_ids=v) for k, v in concept_set.items()
         ]
-        self.args = [
+        self.arguments = [
             Flag(argument_name="allOccurrences", value=all_occurrences),
             EndArg(value=end_definition),
             RequiredObservationArg(
@@ -37,9 +36,5 @@ class DefineConceptCohort:
         ]
 
     def render_shell(self) -> str:
-        rendered_args = " ".join([arg.render() for arg in self.args])
+        rendered_args = " ".join([arg.render() for arg in self.arguments])
         return f"Rscript {self.script_path} {self.cohort_name} {rendered_args}"
-
-    @property
-    def cohorts(self) -> list[str]:
-        return [self.cohort_name]

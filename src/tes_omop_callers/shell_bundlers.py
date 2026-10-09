@@ -1,15 +1,23 @@
-from typing import Any
+from typing import Any, Protocol
 
 from .base import Executor, OMOPScriptTask, TaskBundler
 from .cohort_clean_up import CleanUpCohortTable
 
 
-class ShellBundler(TaskBundler):
+class ShellBundler(TaskBundler, Protocol):
     image: str
     tasks: list[OMOPScriptTask]
 
-    def render_shell(self):
-        return " ".join([task.render() for task in self.tasks])
+    def render_shell(self) -> str:
+        shell_string = self.tasks[0].render()
+        
+        for task in self.tasks[1:]:
+            if task.must_run:
+                shell_string += f"; {task.render()}"
+            else:
+                shell_string += f"&& {task.render()}"
+
+        return shell_string
 
     def render_executor(self) -> dict[str, Any]:
         executor = Executor(
@@ -22,9 +30,9 @@ class CohortShellBundler(ShellBundler):
     def init(self, image: str, tasks: list[OMOPScriptTask]):
         self.image = image
         self.tasks = tasks
-        cohorts = []
+        cohorts: set[str] = set()
         for task in tasks:
             if task.cohorts is not None:
-                cohorts = [*cohorts, *task.cohorts]
+                cohorts.union(set(task.cohorts))
         if len(cohorts) > 0:
-            self.tasks.append(CleanUpCohortTable(cohort_table_names=cohorts))
+            self.tasks.append(CleanUpCohortTable(cohort_table_names=list(cohorts)))

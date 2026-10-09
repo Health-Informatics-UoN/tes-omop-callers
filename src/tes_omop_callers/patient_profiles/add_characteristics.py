@@ -1,4 +1,4 @@
-from tes_omop_callers.base import ScriptArg
+from tes_omop_callers.base import OMOPScriptTask
 from tes_omop_callers.script_args import (
     Flag,
     JsonSerialisedArg,
@@ -8,9 +8,7 @@ from tes_omop_callers.script_args import (
 )
 
 
-class AddCharacteristics:
-    args: list[ScriptArg]
-
+class AddCharacteristics(OMOPScriptTask):
     def __init__(
         self,
         cohort_name: str,
@@ -36,7 +34,7 @@ class AddCharacteristics:
             age_group = [(0, 150)]
         self.script_path = "inst/scripts/addCharacteristics.R"
         self.cohort_name = cohort_name
-        self.args = [
+        self.arguments = [
             #  --indexDate=<date_col>        Date column to use as index [default: cohort_start_date]
             StringArg(argument_name="indexDate", value=index_date),
             #  --addAge                      Add age at index date
@@ -74,6 +72,6 @@ class AddCharacteristics:
         ]
 
     def render_shell(self) -> str:
-        rendered_args = [arg.render() for arg in self.args]
+        rendered_args = [arg.render() for arg in self.arguments]
         rendered_args = " ".join([arg for arg in rendered_args if arg != ""])
         return f"Rscript {self.script_path} {self.cohort_name} {rendered_args}"

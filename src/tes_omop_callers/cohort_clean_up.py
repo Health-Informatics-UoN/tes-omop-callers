@@ -13,6 +13,7 @@ class CleanUpCohortTable(OMOPScriptTask):
         else:
             self.script_path = script_path
         self.arguments = [PositionalStrings(value=cohort_table_names)]
+        self.must_run = True
         
 
     def render(self) -> str:

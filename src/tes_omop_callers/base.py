@@ -13,6 +13,7 @@ class OMOPScriptTask(Protocol):
     script_path: str
     arguments: list[ScriptArg]
     cohorts: list[str] | None = None
+    must_run: bool = False
 
     def render(self) -> str:
         return ""

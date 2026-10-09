@@ -1,8 +1,21 @@
+from typing import Annotated
 import pytest
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
-from tes_omop_callers.script_args import EndArg, MonthArg, StringArg
+from tes_omop_callers.script_args import EndArg, MonthArg, SimpleArg, StringArg
 
+
+def test_simple_arg_str_prints():
+    arg = SimpleArg[str](argument_name="wizard", value="Gandalf")
+    assert arg.render() == "--wizard=Gandalf"
+
+def test_simple_arg_str_rejects_numbers():
+    with pytest.raises(ValidationError):
+        _ = SimpleArg[str](argument_name="wizard", value=1)
+
+def test_simple_arg_int_limit_rejects():
+    with pytest.raises(ValidationError):
+        _ = SimpleArg[Annotated[int, Field(lt=10)]](argument_name="finger", value=30)
 
 def test_string_arg_prints():
     arg = StringArg(argument_name="wizard", value="Gandalf")

@@ -47,7 +47,10 @@ def two_definition_cohort_shell_bundler(define_cohort_task, second_define_cohort
             )
 
 def test_cohort_shell_bundler_handles_two_cohorts(two_definition_cohort_shell_bundler):
-    assert two_definition_cohort_shell_bundler.cohorts == ["test_cohort", "test_cohort_2"]
+    # Using a set is non-deterministic in the ordering
+    assert len(two_definition_cohort_shell_bundler.cohorts) == 2
+    assert "test_cohort" in two_definition_cohort_shell_bundler.cohorts
+    assert "test_cohort_2" in two_definition_cohort_shell_bundler.cohorts
     assert len(two_definition_cohort_shell_bundler.tasks) == 3
 
 def test_cohort_shell_bundler_renders_two_cohorts(two_definition_cohort_shell_bundler):

@@ -1,3 +1,4 @@
+from datetime import date
 import json
 import shlex
 from typing import Annotated, Literal, TypeVar
@@ -90,3 +91,11 @@ class ConceptSetArg(BaseModel):
     def render(self) -> str:
         concept_set_dict = {cs.name: cs.concept_ids for cs in self.concept_sets}
         return f"--{self.argument_name}={shlex.quote(json.dumps(concept_set_dict))}"
+
+class DatePair(BaseModel):
+    argument_name: str
+    start_date: date
+    end_date: date
+
+    def render(self) -> str:
+        return f"--{self.argument_name}={self.start_date},{self.end_date}"

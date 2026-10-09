@@ -1,5 +1,6 @@
 from typing import Literal
 
+from .base import ScriptArg
 from .script_args import (
     ConceptSet,
     ConceptSetArg,
@@ -7,7 +8,7 @@ from .script_args import (
     Flag,
     RequiredObservationArg,
 )
-from .base import ScriptArg
+
 
 class DefineConceptCohort:
     args: list[ScriptArg]

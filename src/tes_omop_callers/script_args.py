@@ -1,6 +1,6 @@
 import json
 import shlex
-from typing import Annotated, Any, Generic, Literal, TypeVar, override
+from typing import Annotated, Any, Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 

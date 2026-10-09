@@ -9,7 +9,6 @@ class ScriptArg(Protocol):
     def render(self) -> str: ...
 
 
-
 # class OMOPScriptTask(BaseModel):
 #     script_path: str
 #     arguments: list[ScriptArg]
@@ -20,6 +19,7 @@ class ScriptArg(Protocol):
 class Executor(BaseModel):
     image: str
     command: list[str]
+
 
 # class TaskBundler(Protocol):
 #     image: str

@@ -16,7 +16,7 @@ class AddCharacteristics:
         cohort_name: str,
         index_date: str = "cohort_start_date",
         add_age: bool = False,
-        age_group: list[tuple[int, int]] = [(0, 150)],
+        age_group: list[tuple[int, int]] | None = None,
         age_name: str = "age",
         missing_month: int = 1,
         missing_day: int | None = None,
@@ -26,10 +26,14 @@ class AddCharacteristics:
         add_prior_observation: bool = False,
         add_future_observation: bool = False,
         add_in_observation: bool = False,
-        in_observation_window: list[tuple[int, int]] = [(0, 0)],
+        in_observation_window: list[tuple[int, int]] | None = None,
         complete_interval: bool = False,
         use_demographics: bool = False,
     ) -> None:
+        if in_observation_window is None:
+            in_observation_window = [(0, 0)]
+        if age_group is None:
+            age_group = [(0, 150)]
         self.script_path = "inst/scripts/addCharacteristics.R"
         self.cohort_name = cohort_name
         self.args = [

@@ -1,6 +1,6 @@
 import json
 import shlex
-from typing import Annotated, Any, Generic, Literal, TypeVar
+from typing import Annotated, Any, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -33,7 +33,7 @@ class StringArg(SimpleArg):
     value: str | None
 
 
-class JsonSerialisedArg(BaseModel, Generic[T]):
+class JsonSerialisedArg[T](BaseModel):
     argument_name: str
     value: T
 

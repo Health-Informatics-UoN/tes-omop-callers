@@ -27,12 +27,11 @@ class ShellBundler(TaskBundler, Protocol):
 
 
 class CohortShellBundler(ShellBundler):
-    def init(self, image: str, tasks: list[OMOPScriptTask]):
+    def __init__(self, image: str, tasks: list[OMOPScriptTask]):
         self.image = image
         self.tasks = tasks
         cohorts: set[str] = set()
-        for task in tasks:
-            if task.cohorts is not None:
-                cohorts.union(set(task.cohorts))
-        if len(cohorts) > 0:
-            self.tasks.append(CleanUpCohortTable(cohort_table_names=list(cohorts)))
+        cohorts.update(*[set(task.cohorts) for task in tasks if task.cohorts is not None])
+        self.cohorts = list(cohorts)
+        if len(self.cohorts) > 0:
+            self.tasks.append(CleanUpCohortTable(cohort_table_names=self.cohorts))

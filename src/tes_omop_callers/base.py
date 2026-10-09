@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 from pydantic import BaseModel
 
@@ -9,11 +9,13 @@ class ScriptArg(Protocol):
     def render(self) -> str: ...
 
 
-# class OMOPScriptTask(BaseModel):
-#     script_path: str
-#     arguments: list[ScriptArg]
-#
-#     def render(self) -> str: return ""
+class OMOPScriptTask(Protocol):
+    script_path: str
+    arguments: list[ScriptArg]
+    cohorts: list[str] | None = None
+
+    def render(self) -> str:
+        return ""
 
 
 class Executor(BaseModel):
@@ -21,21 +23,9 @@ class Executor(BaseModel):
     command: list[str]
 
 
-# class TaskBundler(Protocol):
-#     image: str
-#     tasks: list[OMOPScriptTask]
-#
-#     def render_executor(self) -> dict[str, Any]: ...
+class TaskBundler(Protocol):
+    image: str
+    tasks: list[OMOPScriptTask]
 
+    def render_executor(self) -> dict[str, Any]: ...
 
-# class ShellBundler(BaseModel, TaskBundler):
-#     image: str
-#
-#     def render_shell(self):
-#         return " ".join([task.render() for task in self.tasks])
-#
-#     def render_executor(self) -> dict[str, Any]:
-#         executor = Executor(
-#             image=self.image, command=["bin/sh", "-c", self.render_shell()]
-#         )
-#         return executor.model_dump()

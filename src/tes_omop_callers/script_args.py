@@ -1,36 +1,23 @@
 import json
 import shlex
-from typing import Annotated, Any, Literal, TypeVar
+from typing import Annotated, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
 T = TypeVar("T")
 
 
-class SimpleArg(BaseModel):
+# Generics
+# --------
+class SimpleArg[T](BaseModel):
     argument_name: str
-    value: Any
+    value: T
 
     def render(self) -> str:
         if self.value is not None:
             return f"--{self.argument_name}={self.value}"
         else:
             return ""
-
-
-class Flag(BaseModel):
-    argument_name: str
-    value: bool
-
-    def render(self) -> str:
-        if self.value:
-            return f"--{self.argument_name}"
-        else:
-            return ""
-
-
-class StringArg(SimpleArg):
-    value: str | None
 
 
 class JsonSerialisedArg[T](BaseModel):
@@ -41,19 +28,47 @@ class JsonSerialisedArg[T](BaseModel):
         return f"--{self.argument_name}={shlex.quote(json.dumps(self.value))}"
 
 
-class MonthArg(SimpleArg):
-    value: Annotated[int, Field(gt=0, le=12)]
+# Flag for boolean
+# ----------------
+class Flag(BaseModel):
+    argument_name: str
+    value: bool
+
+    def render(self) -> str:
+        if self.value:
+            return f"--{self.argument_name}"
+        else:
+            return ""
+
+# List of args
+# ------------
+class PositionalList[T](BaseModel):
+    argument_name: str = ""
+    value: T
+
+class PositionalStrings(PositionalList[list[str]]):
+
+    def render(self) -> str:
+        return " ".join(self.value)
 
 
-class WeekdayArg(SimpleArg):
-    value: Annotated[int, Field(gt=0, le=7)] | None
+# Simple args
+# -----------
+class StringArg(SimpleArg[str | None]): ...
 
 
-class EndArg(SimpleArg):
+class MonthArg(SimpleArg[Annotated[int, Field(gt=0, le=12)]]): ...
+
+
+class WeekdayArg(SimpleArg[Annotated[int, Field(gt=0, le=7)] | None]): ...
+
+
+class EndArg(SimpleArg[Literal["observation_period_end_date", "event_end_date"] | int]):
     argument_name: str = "end"
-    value: Literal["observation_period_end_date", "event_end_date"] | int
 
 
+# Specific args
+# -------------
 class RequiredObservationArg(BaseModel):
     argument_name: str = "requiredObservation"
     prior: int = 0

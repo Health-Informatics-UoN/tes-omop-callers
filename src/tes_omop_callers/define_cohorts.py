@@ -39,3 +39,7 @@ class DefineConceptCohort:
     def render_shell(self) -> str:
         rendered_args = " ".join([arg.render() for arg in self.args])
         return f"Rscript {self.script_path} {self.cohort_name} {rendered_args}"
+
+    @property
+    def cohorts(self) -> list[str]:
+        return [self.cohort_name]

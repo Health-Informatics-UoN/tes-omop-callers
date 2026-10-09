@@ -74,5 +74,6 @@ class AddCharacteristics:
         ]
 
     def render_shell(self) -> str:
-        rendered_args = " ".join([arg.render() for arg in self.args])
+        rendered_args = [arg.render() for arg in self.args]
+        rendered_args = " ".join([arg for arg in rendered_args if arg != ""])
         return f"Rscript {self.script_path} {self.cohort_name} {rendered_args}"

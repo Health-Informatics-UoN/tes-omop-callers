@@ -1,4 +1,4 @@
-from typing import Any, Protocol
+from typing import Protocol
 
 from pydantic import BaseModel
 
@@ -8,7 +8,6 @@ class ScriptArg(Protocol):
 
     def render(self) -> str: ...
 
-    # def marimo_widget(self) -> Any: ...
 
 
 # class OMOPScriptTask(BaseModel):

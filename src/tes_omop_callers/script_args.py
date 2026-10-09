@@ -4,13 +4,6 @@ from typing import Annotated, Any, Generic, Literal, TypeVar, override
 
 from pydantic import BaseModel, Field
 
-try:
-    import marimo as mo
-except ImportError:
-    mo = None
-
-# from .widgets.marimo import default_marimo_widgets
-
 T = TypeVar("T")
 
 
@@ -24,19 +17,6 @@ class SimpleArg(BaseModel):
         else:
             return ""
 
-    # def marimo_widget(self):
-    #     try:
-    #         model_json = self.model_json_schema()
-    #         properties = model_json["properties"]["value"]
-    #         default_marimo_widgets[type(self.value)](
-    #             {**properties},
-    #             label=self.argument_name,
-    #         )
-    #     except KeyError as e:
-    #         raise e
-    #     except ImportError as e:
-    #         raise e
-
 
 class Flag(BaseModel):
     argument_name: str
@@ -47,14 +27,6 @@ class Flag(BaseModel):
             return f"--{self.argument_name}"
         else:
             return ""
-
-    # def marimo_widget(self):
-    #     if mo is not None:
-    #         return mo.ui.switch(value=self.value, label=self.argument_name)
-    #     else:
-    #         raise ImportError(
-    #             "The marimo group needs to be installed to use their widgets"
-    #         )
 
 
 class StringArg(SimpleArg):
@@ -81,18 +53,6 @@ class EndArg(SimpleArg):
     argument_name: str = "end"
     value: Literal["observation_period_end_date", "event_end_date"] | int
 
-    # @override
-    # def marimo_widget(self):  # noqa
-    #     if mo is not None:
-    #         return mo.ui.dropdown(
-    #             options=["observation_period_end_date", "event_end_date"],
-    #             label=self.argument_name,
-    #         )
-    #     else:
-    #         raise ImportError(
-    #             "The marimo group needs to be installed to use their widgets"
-    #         )
-
 
 class RequiredObservationArg(BaseModel):
     argument_name: str = "requiredObservation"
@@ -102,33 +62,10 @@ class RequiredObservationArg(BaseModel):
     def render(self) -> str:
         return f"--{self.argument_name}='[{self.prior},{self.post}]'"
 
-    # def marimo_widget(self):
-    #     if mo is not None:
-    #         return mo.hstack(
-    #             [
-    #                 mo.md(self.argument_name),
-    #                 mo.ui.number(start=0, step=1, label="Prior"),
-    #                 mo.ui.number(start=0, step=1, label="post"),
-    #             ]
-    #         )
-    #     else:
-    #         raise ImportError(
-    #             "The marimo group needs to be installed to use their widgets"
-    #         )
-
 
 class ConceptSet(BaseModel):
     name: str
     concept_ids: list[int]
-
-    # @staticmethod
-    # def marimo_widget():
-    #     if mo is not None:
-    #         return mo.hstack(
-    #             [mo.ui.text(label="Name"), mo.ui.text(label="Concept IDs")]
-    #         )
-    #     else:
-    #         raise ImportError
 
 
 class ConceptSetArg(BaseModel):
@@ -138,9 +75,3 @@ class ConceptSetArg(BaseModel):
     def render(self) -> str:
         concept_set_dict = {cs.name: cs.concept_ids for cs in self.concept_sets}
         return f"--{self.argument_name}={shlex.quote(json.dumps(concept_set_dict))}"
-
-    # def marimo_widget(self):
-    #     if mo is not None:
-    #         return mo.hstack([mo.md("Concept sets"), ConceptSet.marimo_widget()])
-    #     else:
-    #         raise ImportError

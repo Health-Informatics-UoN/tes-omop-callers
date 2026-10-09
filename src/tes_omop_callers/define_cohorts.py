@@ -1,10 +1,5 @@
 from typing import Literal
 
-# try:
-#     import marimo as mo
-# except ImportError:
-#     mo = None
-
 from .script_args import (
     ConceptSet,
     ConceptSetArg,
@@ -13,20 +8,6 @@ from .script_args import (
     RequiredObservationArg,
 )
 from .base import ScriptArg
-
-DEFINE_CONCEPT_COHORT_TEMPLATE = """
-## Define Concept Cohort
-
-**Cohort name** {cohort_name}
-
-**Concept set** {concept_set}
-
-**All Occurrences** {all_occurrences}
-
-**End** {end}
-
-**Required Observation** {required_observation}
-"""
 
 class DefineConceptCohort:
     args: list[ScriptArg]
@@ -57,22 +38,3 @@ class DefineConceptCohort:
     def render_shell(self) -> str:
         rendered_args = " ".join([arg.render() for arg in self.args])
         return f"Rscript {self.script_path} {self.cohort_name} {rendered_args}"
-
-    # def marimo_form(self):
-    #     if mo is not None:
-    #         return (
-    #             mo.md(
-    #                 DEFINE_CONCEPT_COHORT_TEMPLATE
-    #                 )
-    #             .batch(
-    #                 cohort_name = mo.ui.text(),
-    #                 all_occurrences = self.args[0].marimo_widget(),
-    #                 end = self.args[1].marimo_widget(),
-    #                 required_observation = self.args[2].marimo_widget(),
-    #                 concept_set = self.args[3].marimo_widget(),
-    #                 )
-    #             .form()
-    #         )
-    #
-    #     else:
-    #         raise ImportError

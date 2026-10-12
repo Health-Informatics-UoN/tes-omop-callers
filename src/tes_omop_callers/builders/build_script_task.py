@@ -27,7 +27,7 @@ def build_omop_script_task(
     script_path: str,
     argument_descriptions: list[ArgDescription],
     must_run: bool,
-    docstring: str | None = None
+    docstring: str | None = None,
 ):
     def new_init(self, **kwargs) -> None:
         self.script_path = script_path
@@ -35,14 +35,17 @@ def build_omop_script_task(
         for arg in argument_descriptions:
             val = kwargs.get(arg.python_arg_name, arg.default)
             self.arguments.append(
-                    arg.build_arg()(argument_name=arg.argument_name, value=val)
-                    )
+                arg.build_arg()(argument_name=arg.argument_name, value=val)
+            )
         for k in kwargs:
             arg = next(
-                (desc for desc in argument_descriptions if desc.python_arg_name == k), None
+                (desc for desc in argument_descriptions if desc.python_arg_name == k),
+                None,
             )
             if arg is None:
                 raise TypeError(f"Argument {k} is not valid for {name}")
         self.must_run = must_run
 
-    return type(name, (ConcreteScriptTask,), {"__init__": new_init, "__doc__": docstring})
+    return type(
+        name, (ConcreteScriptTask,), {"__init__": new_init, "__doc__": docstring}
+    )

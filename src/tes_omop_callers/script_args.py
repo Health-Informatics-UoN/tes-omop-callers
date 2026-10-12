@@ -30,10 +30,7 @@ class JsonSerialisedArg[T](BaseArg[T]):
 
 # Flag for boolean
 # ----------------
-class Flag(BaseModel):
-    argument_name: str
-    value: bool
-
+class Flag(BaseArg[bool]):
     def render(self) -> str:
         if self.value:
             return f"--{self.argument_name}"

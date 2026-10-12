@@ -4,6 +4,7 @@ from pydantic import Field, ValidationError
 
 from tes_omop_callers.script_args import EndArg, MonthArg, SimpleArg, StringArg
 
+
 # String args
 def test_simple_arg_str_prints():
     arg = SimpleArg[str](argument_name="wizard", value="Gandalf")
@@ -30,33 +31,37 @@ def test_string_arg_rejects_numbers():
     with pytest.raises(ValidationError):
         _ = StringArg(argument_name="wizard", value=1)
 
+
 # Multiple types
+
 
 @pytest.fixture
 def monthy_arg():
     return SimpleArg[
-            Literal[
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
-                ] |
-            Annotated[int, Field(ge=1, le=12)]
-            ]
+        Literal[
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ]
+        | Annotated[int, Field(ge=1, le=12)]
+    ]
+
 
 def test_multiple_accepts_either(monthy_arg):
     arg_int = monthy_arg(argument_name="month", value=1)
     assert arg_int.render() == "--month=1"
     arg_str = monthy_arg(argument_name="month", value="Jan")
     assert arg_str.render() == "--month=Jan"
+
 
 # Specific args
 def test_month_arg_prints():

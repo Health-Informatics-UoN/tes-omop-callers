@@ -4,10 +4,19 @@ from typing import Annotated, Literal
 from pydantic import Field
 
 from tes_omop_callers.base import OMOPScriptTask
-from tes_omop_callers.script_args import DatePair, Flag, JsonSerialisedArg, SimpleArg, StringArg
+from tes_omop_callers.script_args import (
+    DatePair,
+    Flag,
+    JsonSerialisedArg,
+    SimpleArg,
+    StringArg,
+)
 
 IMInterval = Literal["years", "months", "quarters", "weeks", "overall"]
-IMTimePoint = Literal["start", "middle", "end"] # This is a bit of a guess, I can see "start", and "middle" in the docs
+IMTimePoint = Literal[
+    "start", "middle", "end"
+]  # This is a bit of a guess, I can see "start", and "middle" in the docs
+
 
 class IncidencePrevalence(OMOPScriptTask):
     def __init__(
@@ -29,7 +38,7 @@ class IncidencePrevalence(OMOPScriptTask):
         point_prevalence_interval: IMInterval = "years",
         point_prevalence_time_point: IMTimePoint = "start",
         estimate_period_prevalence_output_path: str | None = None,
-        period_prevalence_interval: IMInterval = "years"
+        period_prevalence_interval: IMInterval = "years",
     ) -> None:
         self.script_path = "inst/scripts/incidencePrevalence.R"
         if denominator_cohort_date_range is None:
@@ -37,27 +46,64 @@ class IncidencePrevalence(OMOPScriptTask):
         self.denominator_cohort_name = denominator_cohort_name
         self.outcome_cohort_name = outcome_cohort_name
         self.arguments = [
-            DatePair(argument_name="denominatorCohortDateRange", start_date=min(denominator_cohort_date_range), end_date=max(denominator_cohort_date_range)),
-            JsonSerialisedArg[list[tuple[int,int]]](argument_name="denominatorAgeGroup", value=denominator_age_group),
+            DatePair(
+                argument_name="denominatorCohortDateRange",
+                start_date=min(denominator_cohort_date_range),
+                end_date=max(denominator_cohort_date_range),
+            ),
+            JsonSerialisedArg[list[tuple[int, int]]](
+                argument_name="denominatorAgeGroup", value=denominator_age_group
+            ),
             Flag(argument_name="denominatorBothOff", value=denominator_both_off),
             Flag(argument_name="denominatorMale", value=denominator_male),
             Flag(argument_name="denominatorFemale", value=denominator_female),
-            SimpleArg[Annotated[int, Field(ge=0)]](argument_name="denominatorDaysPriorObservation", value=denominator_days_prior_observation),
-            Flag(argument_name="requirementInteractions", value=requirement_interactions),
-            SimpleArg[str](argument_name="outcomeCohortName", value=outcome_cohort_name),
-            StringArg(argument_name="estimateIncidenceOutputPath", value=estimate_incident_output_path),
-            SimpleArg[IMInterval](argument_name="incidence_interval", value=incidence_interval),
-            SimpleArg[Annotated[int, Field(ge=0)]](argument_name="incidenceOutcomeWashout", value=incidence_outcome_washout),
-            Flag(argument_name="incidenceRepeatedEvents", value = incidence_repeated_events),
-            StringArg(argument_name="estimatePointPrevalenceOutputPath", value=estimate_point_prevalence_output_path),
-            SimpleArg[IMInterval](argument_name="pointPrevalenceInterval", value=point_prevalence_interval),
-            SimpleArg[IMTimePoint](argument_name="pointPrevalenceTimePoint", value=point_prevalence_time_point),
-            StringArg(argument_name="estimatePeriodPrevalenceOutputPath", value=estimate_period_prevalence_output_path),
-            SimpleArg[IMInterval](argument_name="periodPrevalenceInterval", value=period_prevalence_interval)
+            SimpleArg[Annotated[int, Field(ge=0)]](
+                argument_name="denominatorDaysPriorObservation",
+                value=denominator_days_prior_observation,
+            ),
+            Flag(
+                argument_name="requirementInteractions", value=requirement_interactions
+            ),
+            SimpleArg[str](
+                argument_name="outcomeCohortName", value=outcome_cohort_name
+            ),
+            StringArg(
+                argument_name="estimateIncidenceOutputPath",
+                value=estimate_incident_output_path,
+            ),
+            SimpleArg[IMInterval](
+                argument_name="incidence_interval", value=incidence_interval
+            ),
+            SimpleArg[Annotated[int, Field(ge=0)]](
+                argument_name="incidenceOutcomeWashout", value=incidence_outcome_washout
+            ),
+            Flag(
+                argument_name="incidenceRepeatedEvents", value=incidence_repeated_events
+            ),
+            StringArg(
+                argument_name="estimatePointPrevalenceOutputPath",
+                value=estimate_point_prevalence_output_path,
+            ),
+            SimpleArg[IMInterval](
+                argument_name="pointPrevalenceInterval", value=point_prevalence_interval
+            ),
+            SimpleArg[IMTimePoint](
+                argument_name="pointPrevalenceTimePoint",
+                value=point_prevalence_time_point,
+            ),
+            StringArg(
+                argument_name="estimatePeriodPrevalenceOutputPath",
+                value=estimate_period_prevalence_output_path,
+            ),
+            SimpleArg[IMInterval](
+                argument_name="periodPrevalenceInterval",
+                value=period_prevalence_interval,
+            ),
         ]
-    
-    def render_shell(self) -> str:
+
+    def render(self) -> str:
         rendered_args = [arg.render() for arg in self.arguments]
         rendered_args = " ".join([arg for arg in rendered_args if arg != ""])
-        return f"Rscript {self.script_path} {self.denominator_cohort_name} {rendered_args}"
-
+        return (
+            f"Rscript {self.script_path} {self.denominator_cohort_name} {rendered_args}"
+        )

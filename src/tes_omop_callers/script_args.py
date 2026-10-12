@@ -10,10 +10,12 @@ T = TypeVar("T")
 
 # Generics
 # --------
-class SimpleArg[T](BaseModel):
+class BaseArg[T](BaseModel):
     argument_name: str
     value: T
 
+
+class SimpleArg[T](BaseArg[T]):
     def render(self) -> str:
         if self.value is not None:
             return f"--{self.argument_name}={self.value}"
@@ -21,10 +23,7 @@ class SimpleArg[T](BaseModel):
             return ""
 
 
-class JsonSerialisedArg[T](BaseModel):
-    argument_name: str
-    value: T
-
+class JsonSerialisedArg[T](BaseArg[T]):
     def render(self) -> str:
         return f"--{self.argument_name}={shlex.quote(json.dumps(self.value))}"
 
@@ -41,14 +40,15 @@ class Flag(BaseModel):
         else:
             return ""
 
+
 # List of args
 # ------------
 class PositionalList[T](BaseModel):
     argument_name: str = ""
     value: T
 
-class PositionalStrings(PositionalList[list[str]]):
 
+class PositionalStrings(PositionalList[list[str]]):
     def render(self) -> str:
         return " ".join(self.value)
 
@@ -91,6 +91,7 @@ class ConceptSetArg(BaseModel):
     def render(self) -> str:
         concept_set_dict = {cs.name: cs.concept_ids for cs in self.concept_sets}
         return f"--{self.argument_name}={shlex.quote(json.dumps(concept_set_dict))}"
+
 
 class DatePair(BaseModel):
     argument_name: str

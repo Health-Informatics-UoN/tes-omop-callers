@@ -29,4 +29,3 @@ class TaskBundler(Protocol):
     tasks: list[OMOPScriptTask]
 
     def render_executor(self) -> dict[str, Any]: ...
-

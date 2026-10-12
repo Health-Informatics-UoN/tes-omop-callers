@@ -10,7 +10,7 @@ class ShellBundler(TaskBundler, Protocol):
 
     def render_shell(self) -> str:
         shell_string = self.tasks[0].render()
-        
+
         for task in self.tasks[1:]:
             if task.must_run:
                 shell_string += f"; {task.render()}"
@@ -31,7 +31,9 @@ class CohortShellBundler(ShellBundler):
         self.image = image
         self.tasks = tasks
         cohorts: set[str] = set()
-        cohorts.update(*[set(task.cohorts) for task in tasks if task.cohorts is not None])
+        cohorts.update(
+            *[set(task.cohorts) for task in tasks if task.cohorts is not None]
+        )
         self.cohorts = list(cohorts)
         if len(self.cohorts) > 0:
             self.tasks.append(CleanUpCohortTable(cohort_table_names=self.cohorts))

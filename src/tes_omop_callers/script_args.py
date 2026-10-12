@@ -43,7 +43,7 @@ class Flag(BaseModel):
 
 # List of args
 # ------------
-class PositionalList[T](BaseModel):
+class PositionalList[T](BaseArg[T]):
     argument_name: str = ""
     value: T
 

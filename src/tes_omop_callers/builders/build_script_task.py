@@ -1,6 +1,6 @@
 from pydantic import BaseModel, create_model
-from tes_omop_callers.base import OMOPScriptTask
-from tes_omop_callers.script_args import BaseArg
+from ..base import OMOPScriptTask
+from ..script_args import BaseArg
 
 
 class ArgDescription(BaseModel):
@@ -26,15 +26,18 @@ def build_omop_script_task(
     must_run: bool,
 ):
     def new_init(self, **kwargs) -> None:
-        super(self.__class__).__init__()
         self.script_path = script_path
+        self.arguments = []
         for k, v in kwargs.items():
             arg = next(
-                desc for desc in argument_descriptions if desc.python_arg_name == k
+                (desc for desc in argument_descriptions if desc.python_arg_name == k), None
             )
-            self.arguments.append(
-                arg.build_arg()(argument_name=arg.argument_name, value=v)
-            )
+            if arg is not None:
+                self.arguments.append(
+                    arg.build_arg()(argument_name=arg.argument_name, value=v)
+                )
+            else:
+                raise TypeError(f"Argument {k} is not valid for {name}")
         self.must_run = must_run
 
     return type(name, (ConcreteScriptTask,), {"__init__": new_init})

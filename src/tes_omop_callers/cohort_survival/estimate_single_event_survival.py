@@ -1,7 +1,10 @@
 from math import inf
 from typing import Annotated
 from pydantic import Field
-from tes_omop_callers.builders.build_script_task import ArgDescription, build_omop_script_task
+from tes_omop_callers.builders.build_script_task import (
+    ArgDescription,
+    build_omop_script_task,
+)
 from tes_omop_callers.script_args import JsonSerialisedArg, SimpleArg, Flag
 
 
@@ -47,47 +50,47 @@ args = [
         python_arg_name="censor_on_cohort_exit",
         argument_name="censorOnCohortExit",
         arg_class=Flag,
-        default=False
-        ),
+        default=False,
+    ),
     ArgDescription(
         python_arg_name="weight",
         argument_name="weight",
-        arg_class=SimpleArg[str|None],
-        ),
+        arg_class=SimpleArg[str | None],
+    ),
     ArgDescription(
         python_arg_name="followup_days",
         argument_name="followUpDays",
         arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-        default=inf
-        ),
+        default=inf,
+    ),
     ArgDescription(
-            python_arg_name="strata",
-            argument_name="strata",
-            arg_class=JsonSerialisedArg[list[str|list[str]]|None],
-            ),
+        python_arg_name="strata",
+        argument_name="strata",
+        arg_class=JsonSerialisedArg[list[str | list[str]] | None],
+    ),
     ArgDescription(
-            python_arg_name="event_gap",
-            argument_name="eventGap",
-            arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-            default=30
-            ),
+        python_arg_name="event_gap",
+        argument_name="eventGap",
+        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
+        default=30,
+    ),
     ArgDescription(
-            python_arg_name="estimate_gap",
-            argument_name="estimateGap",
-            arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-            default=1
-            ),
+        python_arg_name="estimate_gap",
+        argument_name="estimateGap",
+        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
+        default=1,
+    ),
     ArgDescription(
-            python_arg_name="restricted_mean_followup",
-            argument_name="restrictedMeanFollowUp",
-            arg_class=SimpleArg[int|None]
-            ),
+        python_arg_name="restricted_mean_followup",
+        argument_name="restrictedMeanFollowUp",
+        arg_class=SimpleArg[int | None],
+    ),
     ArgDescription(
-            python_arg_name="minimum_survival_days",
-            argument_name="minimumSurvivalDays",
-            arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-            default=1
-            )
+        python_arg_name="minimum_survival_days",
+        argument_name="minimumSurvivalDays",
+        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
+        default=1,
+    ),
 ]
 
 docstring = """
@@ -132,9 +135,9 @@ Returns:
 """
 
 EstimateSingleEventSurvival = build_omop_script_task(
-        name="EstimateSingleEventSurvival",
-        script_path="inst/scripts/estimateSingleEventSurvival.R",
-        argument_descriptions=args,
-        must_run=False,
-        docstring=docstring
-        )
+    name="EstimateSingleEventSurvival",
+    script_path="inst/scripts/estimateSingleEventSurvival.R",
+    argument_descriptions=args,
+    must_run=False,
+    docstring=docstring,
+)

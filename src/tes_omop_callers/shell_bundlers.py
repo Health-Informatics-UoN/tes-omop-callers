@@ -5,6 +5,9 @@ from .cohort_clean_up import CleanUpCohortTable
 
 
 class ShellBundler(TaskBundler, Protocol):
+    """
+    Protocol for a task bundler that renders tasks as a single shell command
+    """
     image: str
     tasks: list[OMOPScriptTask]
 
@@ -27,6 +30,10 @@ class ShellBundler(TaskBundler, Protocol):
 
 
 class CohortShellBundler(ShellBundler):
+    """
+    A ShellBundler for a list of tasks, some of which create cohort tables that need to be cleaned up at the end.
+    This tracks the cohort tables created and creates a task at the end to drop those tables.
+    """
     def __init__(self, image: str, tasks: list[OMOPScriptTask]):
         self.image = image
         self.tasks = tasks

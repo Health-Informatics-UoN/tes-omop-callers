@@ -54,7 +54,7 @@ This chains together the tasks defined above, and adds one at the end that drops
 
 If instead, you call `cohort_bundler.render_executor()`, you will get:
 
-```json
+```python
 {
     'image': 'ghcr.io/health-informatics-uon/omop-r-tools:sha-9aa526d',
     'command': [

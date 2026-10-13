@@ -34,7 +34,10 @@ class JsonSerialisedArg[T](BaseArg[T]):
     Generic class for rendering script arguments where the value can be rendered using its shell-quoted json representation
     """
     def render(self) -> str:
-        return f"--{self.argument_name}={shlex.quote(json.dumps(self.value))}"
+        if self.value is not None:
+            return f"--{self.argument_name}={shlex.quote(json.dumps(self.value))}"
+        else:
+            return ""
 
 
 # Flag for boolean

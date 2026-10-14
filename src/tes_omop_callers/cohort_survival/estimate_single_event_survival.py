@@ -1,95 +1,18 @@
-from math import inf
-from typing import Annotated
-from pydantic import Field
-from tes_omop_callers.builders.build_script_task import (
+from ..builders.build_script_task import (
     ArgDescription,
     build_omop_script_task,
 )
-from tes_omop_callers.script_args import JsonSerialisedArg, SimpleArg, Flag
+from ..script_args import SimpleArg
+from .arg_descriptions import cohort_survival_common_args
 
 
 args = [
-    ArgDescription(
-        python_arg_name="target_cohort_table",
-        argument_name="targetCohortTable",
-        arg_class=SimpleArg[str],
-    ),
-    ArgDescription(
-        python_arg_name="outcome_cohort_table",
-        argument_name="outcomeCohortTable",
-        arg_class=SimpleArg[str],
-    ),
+    *cohort_survival_common_args,
     ArgDescription(
         python_arg_name="output_path",
         argument_name="outputPath",
         arg_class=SimpleArg[str],
         default="outputs/single-event-survival.csv",
-    ),
-    ArgDescription(
-        python_arg_name="target_cohort_id",
-        argument_name="targetCohortId",
-        arg_class=SimpleArg[str | int | None],
-    ),
-    ArgDescription(
-        python_arg_name="outcome_cohort_id",
-        argument_name="outcomeCohortId",
-        arg_class=SimpleArg[str | int | None],
-    ),
-    ArgDescription(
-        python_arg_name="outcome_date_variable",
-        argument_name="outcomeDateVariable",
-        arg_class=SimpleArg[str],
-        default="cohort_start_date",
-    ),
-    ArgDescription(
-        python_arg_name="outcome_washout",
-        argument_name="outcomeWashout",
-        arg_class=SimpleArg[Annotated[int, Field(ge=0)]],
-    ),
-    ArgDescription(
-        python_arg_name="censor_on_cohort_exit",
-        argument_name="censorOnCohortExit",
-        arg_class=Flag,
-        default=False,
-    ),
-    ArgDescription(
-        python_arg_name="weight",
-        argument_name="weight",
-        arg_class=SimpleArg[str | None],
-    ),
-    ArgDescription(
-        python_arg_name="followup_days",
-        argument_name="followUpDays",
-        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-        default=inf,
-    ),
-    ArgDescription(
-        python_arg_name="strata",
-        argument_name="strata",
-        arg_class=JsonSerialisedArg[list[str | list[str]] | None],
-    ),
-    ArgDescription(
-        python_arg_name="event_gap",
-        argument_name="eventGap",
-        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-        default=30,
-    ),
-    ArgDescription(
-        python_arg_name="estimate_gap",
-        argument_name="estimateGap",
-        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-        default=1,
-    ),
-    ArgDescription(
-        python_arg_name="restricted_mean_followup",
-        argument_name="restrictedMeanFollowUp",
-        arg_class=SimpleArg[int | None],
-    ),
-    ArgDescription(
-        python_arg_name="minimum_survival_days",
-        argument_name="minimumSurvivalDays",
-        arg_class=SimpleArg[Annotated[int, Field(ge=1)]],
-        default=1,
     ),
 ]
 
@@ -113,7 +36,7 @@ Parameters:
 	Number of days before target cohort entry used to exclude people with a prior outcome. Inf excludes people with any prior outcome before index; 0 applies no pre-index washout. [default: Inf]
   censorOnCohortExit: bool
     If True, an individual\'s follow up will be censored at their target cohort exit date. [default: False]
-  censorOnDate: bool
+  censorOnDate: date | str | None = None
 	If True, an individual\'s follow up will be censored at the given date. This can be a scalar Date or the name of a date column in the target cohort table.
   weight: str
 	If provided, the name of a numeric column in the target cohort table containing observation weights to use in the Kaplan-Meier estimation.

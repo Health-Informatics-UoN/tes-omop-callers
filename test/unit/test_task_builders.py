@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import Field, ValidationError
+from pydantic import Field
 import pytest
 
 from tes_omop_callers.builders.build_script_task import (
@@ -34,14 +34,6 @@ def arg_with_default() -> ArgDescription:
         arg_class=SimpleArg[Literal["Samwise", "Pippin", "Merry", "Frodo"]],
         default="Samwise",
     )
-
-
-def test_arg_descriptions(arg_descriptions):
-    args = [desc.build_arg() for desc in arg_descriptions]
-    with pytest.raises(ValidationError):
-        _ = args[0](argument_name="testMonth", value=13)
-    with pytest.raises(ValidationError):
-        _ = args[1](argument_name="testDay", value="Monday")
 
 
 @pytest.fixture

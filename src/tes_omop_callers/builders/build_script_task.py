@@ -24,9 +24,23 @@ class ArgDescription(BaseModel):
     argument_name: str
     arg_class: type[BaseArg]
     default: Any | None = None
+    description: str | None = None
 
     def build_arg(self) -> type[BaseArg]:
         return create_model(self.argument_name, __base__=(self.arg_class))
+
+    def build_docstring(self) -> str:
+        return_type = self.arg_class.model_fields["value"].annotation
+        return_type_str = str(return_type)
+        return_type_repr = return_type_str[8:-2] if "class" in return_type_str else return_type_str
+        if self.default is None:
+            if "None" in return_type_str:
+                return_representation = f"{return_type_repr} = None"
+            else:
+                return_representation = f"{return_type_repr}"
+        else:
+            return_representation = f"{return_type_repr} = {self.default}"
+        return f"{self.python_arg_name}: {return_representation}\n\t{self.description}"
 
 
 class ConcreteScriptTask(OMOPScriptTask):
@@ -37,6 +51,7 @@ class ConcreteScriptTask(OMOPScriptTask):
         rendered_args = [arg.render() for arg in self.arguments]
         rendered_args = " ".join([arg for arg in rendered_args if arg != ""])
         return f"Rscript {self.script_path} {rendered_args}"
+
 
 
 def build_omop_script_task(

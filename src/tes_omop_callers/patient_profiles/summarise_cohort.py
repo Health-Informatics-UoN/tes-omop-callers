@@ -2,8 +2,6 @@ from typing import Any, Literal
 
 from ..builders.build_script_task import ArgDescription, build_omop_script_task
 from ..script_args import JsonSerialisedArg, SimpleArg
-from tes_omop_callers import script_args
-
 
 class RLogicalArg(SimpleArg[Literal["TRUE", "FALSE"]]): ...
 

@@ -10,6 +10,7 @@ For example, to create a concept set cohort using the [omop-r-tools](https://git
 
 ```python
 from tes_omop_callers.define_cohorts import DefineConceptCohort
+
 cohort_task = DefineConceptCohort(
     "diabetes_cohort", concept_set={"diabetes": [201254, 201826]}
 )
@@ -22,7 +23,10 @@ We can add another task for incidence and prevalence:
 
 ```python
 from tes_omop_callers.incidence_prevalence import IncidencePrevalence
-i_p_task = IncidencePrevalence("denom", "diabetes_cohort", estimate_incidence_output_path="outputs/incidence.csv")
+
+i_p_task = IncidencePrevalence(
+    "denom", "diabetes_cohort", estimate_incidence_output_path="outputs/incidence.csv"
+)
 ```
 
 This task estimates the incidence of diabetes in your population based on their entry into the diabetes cohort defined earlier.
@@ -38,6 +42,7 @@ These tasks can be used and chained together with a bundler
 
 ```python
 from tes_omop_callers.shell_bundlers import CohortShellBundler
+
 cohort_bundler = CohortShellBundler(
     image="ghcr.io/health-informatics-uon/omop-r-tools:sha-9aa526d",
     tasks=[cohort_task, i_p_task],
@@ -56,12 +61,12 @@ If instead, you call `cohort_bundler.render_executor()`, you will get:
 
 ```python
 {
-    'image': 'ghcr.io/health-informatics-uon/omop-r-tools:sha-9aa526d',
-    'command': [
-        'bin/sh',
-        '-c',
-        'Rscript inst/scripts/defineConceptCohortSet.R diabetes_cohort --conceptSet=\'{"diabetes": [201254, 201826]}\' --end=observation_period_end_date --requiredObservation=\'[0,0]\'&& Rscript inst/scripts/incidencePrevalence.R diabetes_cohort --denominatorCohortDateRange=1900-01-01,2100-01-01 --denominatorAgeGroup=\'[[0, 150]]\' --denominatorDaysPriorObservation=0 --requirementInteractions --outcomeCohortName=denom --estimateIncidenceOutputPath=outputs/incidence.csv --incidence_interval=years --incidenceOutcomeWashout=0 --pointPrevalenceInterval=years --pointPrevalenceTimePoint=start --periodPrevalenceInterval=years; Rscript inst/scripts/cleanUpCohortTables.R diabetes_cohort'
-    ]
+    "image": "ghcr.io/health-informatics-uon/omop-r-tools:sha-9aa526d",
+    "command": [
+        "bin/sh",
+        "-c",
+        "Rscript inst/scripts/defineConceptCohortSet.R diabetes_cohort --conceptSet='{\"diabetes\": [201254, 201826]}' --end=observation_period_end_date --requiredObservation='[0,0]'&& Rscript inst/scripts/incidencePrevalence.R diabetes_cohort --denominatorCohortDateRange=1900-01-01,2100-01-01 --denominatorAgeGroup='[[0, 150]]' --denominatorDaysPriorObservation=0 --requirementInteractions --outcomeCohortName=denom --estimateIncidenceOutputPath=outputs/incidence.csv --incidence_interval=years --incidenceOutcomeWashout=0 --pointPrevalenceInterval=years --pointPrevalenceTimePoint=start --periodPrevalenceInterval=years; Rscript inst/scripts/cleanUpCohortTables.R diabetes_cohort",
+    ],
 }
 ```
 
@@ -73,7 +78,7 @@ wb = Workbench()
 wb.build_tes.custom(
     # Other arguments to the custom template
     ...,
-    executors = [cohort_bundler.render_executor()]
+    executors=[cohort_bundler.render_executor()],
 )
 
 wb.submit()
@@ -162,35 +167,35 @@ If you have multiple arguments for your script, you can use this to build a task
 
 ```python
 arg_descriptions = [
-        ArgDescription(
-            python_arg_name="test_month",
-            argument_name="testMonth",
-            arg_class=SimpleArg[Annotated[int, Field(gt=0, le=12)]],
-        ),
-        ArgDescription(
-            python_arg_name="test_day",
-            argument_name="testDay",
-            arg_class=SimpleArg[Annotated[int, Field(gt=0, le=7)]],
-        ),
-    ]
+    ArgDescription(
+        python_arg_name="test_month",
+        argument_name="testMonth",
+        arg_class=SimpleArg[Annotated[int, Field(gt=0, le=12)]],
+    ),
+    ArgDescription(
+        python_arg_name="test_day",
+        argument_name="testDay",
+        arg_class=SimpleArg[Annotated[int, Field(gt=0, le=7)]],
+    ),
+]
 ```
 
 If you pass this to `build_omop_script_task`:
 
 ```python
 Task = build_omop_script_task(
-        name="TestTask",
-        script_path="test_path",
-        argument_descriptions=arg_descriptions,
-    )
+    name="TestTask",
+    script_path="test_path",
+    argument_descriptions=arg_descriptions,
+)
 ```
 
 then `Task` will be a class that takes your `arg_descriptions` `python_arg_name` attributes as initialisation parameters.
 
 ```python
-Task(test_month=5, test_day=5) # will return a Task instance
-Task(test_month=5) # will fail because test_day is not defined
-Task(test_month=5, test_day=5, year=2026) # will fail because it has no year parameter
+Task(test_month=5, test_day=5)  # will return a Task instance
+Task(test_month=5)  # will fail because test_day is not defined
+Task(test_month=5, test_day=5, year=2026)  # will fail because it has no year parameter
 ```
 
 These tasks can then be used to render executors, etc.

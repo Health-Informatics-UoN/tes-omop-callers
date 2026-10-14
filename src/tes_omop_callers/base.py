@@ -7,6 +7,7 @@ class ScriptArg(Protocol):
     """
     Protocol for describing an argument of a command-line script
     """
+
     argument_name: str
 
     def render(self) -> str: ...
@@ -16,6 +17,7 @@ class OMOPScriptTask(Protocol):
     """
     Protocol for a script called from the command-line
     """
+
     script_path: str
     arguments: list[ScriptArg]
     cohorts: list[str] | None = None
@@ -37,6 +39,7 @@ class Executor(BaseModel):
     command: list[str]
         The commands passed to the container
     """
+
     image: str
     command: list[str]
 
@@ -52,6 +55,7 @@ class TaskBundler(Protocol):
     tasks: list[OMOPScriptTask]
         A list of OMOPScriptTask which can render commands for the container
     """
+
     image: str
     tasks: list[OMOPScriptTask]
 

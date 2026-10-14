@@ -1,10 +1,13 @@
 from tes_omop_callers.cohort_survival.estimate_competing_event_survival import args
 from tes_omop_callers.builders.docstring import build_docstring
 
+
 def test_docstring_correct():
-    description="Estimate time-to-event probabilities for one or more target cohorts when an event of interest can be precluded by a competing outcome."
-    return_description="An OMOPScriptTask for estimating competing event survival"
-    assert build_docstring(description, args, return_description) =="""Estimate time-to-event probabilities for one or more target cohorts when an event of interest can be precluded by a competing outcome.
+    description = "Estimate time-to-event probabilities for one or more target cohorts when an event of interest can be precluded by a competing outcome."
+    return_description = "An OMOPScriptTask for estimating competing event survival"
+    assert (
+        build_docstring(description, args, return_description)
+        == """Estimate time-to-event probabilities for one or more target cohorts when an event of interest can be precluded by a competing outcome.
 
 Parameters
 ----------
@@ -53,3 +56,4 @@ Returns
 -------
 An OMOPScriptTask for estimating competing event survival
 """
+    )

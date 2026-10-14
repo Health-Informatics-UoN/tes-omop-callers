@@ -14,6 +14,7 @@ class BaseArg[T](BaseModel):
     """
     Base class for a script argument of type T
     """
+
     argument_name: str
     value: T
 
@@ -22,6 +23,7 @@ class SimpleArg[T](BaseArg[T]):
     """
     Generic class for rendering script arguments where the value can be rendered as its string representation
     """
+
     def render(self) -> str:
         if self.value is not None:
             return f"--{self.argument_name}={self.value}"
@@ -33,6 +35,7 @@ class JsonSerialisedArg[T](BaseArg[T]):
     """
     Generic class for rendering script arguments where the value can be rendered using its shell-quoted json representation
     """
+
     def render(self) -> str:
         if self.value is not None:
             return f"--{self.argument_name}={shlex.quote(json.dumps(self.value))}"
@@ -46,6 +49,7 @@ class Flag(BaseArg[bool]):
     """
     A class for script arguments that are a flag, i.e. present if true, absent if false
     """
+
     def render(self) -> str:
         if self.value:
             return f"--{self.argument_name}"
@@ -59,6 +63,7 @@ class PositionalList[T](BaseArg[T]):
     """
     Generic class for a script argument that is positional and has no flag preceding it
     """
+
     argument_name: str = ""
     value: T
 
@@ -67,6 +72,7 @@ class PositionalStrings(PositionalList[list[str]]):
     """
     A class for positional arguments that are described with python strings
     """
+
     def render(self) -> str:
         return " ".join(self.value)
 

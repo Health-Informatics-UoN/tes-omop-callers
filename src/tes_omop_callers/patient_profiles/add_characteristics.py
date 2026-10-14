@@ -12,6 +12,7 @@ class AddCharacteristics(OMOPScriptTask):
     """
     Specification for the addCharacteristics script which adds characteristics to an existing cohort table
     """
+
     def __init__(
         self,
         cohort_name: str,

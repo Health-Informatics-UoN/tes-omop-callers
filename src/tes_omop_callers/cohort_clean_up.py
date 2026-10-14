@@ -6,6 +6,7 @@ class CleanUpCohortTable(OMOPScriptTask):
     """
     A specification for the R script arguments used to clean up the temporary tables used in an analysis
     """
+
     def __init__(
         self, cohort_table_names: list[str], script_path: str | None = None
     ) -> None:

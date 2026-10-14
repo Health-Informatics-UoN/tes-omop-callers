@@ -14,6 +14,7 @@ class DefineConceptCohort(OMOPScriptTask):
     """
     Specification for adding a concept set cohort table
     """
+
     def __init__(
         self,
         cohort_name: str,

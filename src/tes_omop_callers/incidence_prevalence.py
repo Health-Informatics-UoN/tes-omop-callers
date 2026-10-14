@@ -22,11 +22,15 @@ class IncidencePrevalence(OMOPScriptTask):
     """
     Specification of an IncidencePrevalence task
     """
+
     def __init__(
         self,
         outcome_cohort_name: str,
         denominator_cohort_name: str | None = None,
-        denominator_cohort_date_range: tuple[date, date] | None = (date(1900, 1, 1), date(2100, 1, 1)),
+        denominator_cohort_date_range: tuple[date, date] | None = (
+            date(1900, 1, 1),
+            date(2100, 1, 1),
+        ),
         denominator_age_group: list[tuple[int, int]] = [(0, 150)],
         denominator_both_off: bool = False,
         denominator_male: bool = False,
@@ -41,7 +45,7 @@ class IncidencePrevalence(OMOPScriptTask):
         point_prevalence_interval: IMInterval = "years",
         point_prevalence_time_point: IMTimePoint = "start",
         estimate_period_prevalence_output_path: str | None = None,
-        period_prevalence_interval: IMInterval = "years"
+        period_prevalence_interval: IMInterval = "years",
     ) -> None:
         """
         Parameters

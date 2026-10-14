@@ -20,6 +20,7 @@ class ArgDescription(BaseModel):
     default: Any | None = None
         A default value for the argument
     """
+
     python_arg_name: str
     argument_name: str
     arg_class: type[BaseArg]
@@ -32,7 +33,9 @@ class ArgDescription(BaseModel):
     def build_docstring(self) -> str:
         return_type = self.arg_class.model_fields["value"].annotation
         return_type_str = str(return_type)
-        return_type_repr = return_type_str[8:-2] if "class" in return_type_str else return_type_str
+        return_type_repr = (
+            return_type_str[8:-2] if "class" in return_type_str else return_type_str
+        )
         if self.default is None:
             if "None" in return_type_str:
                 return_representation = f"{return_type_repr} = None"
@@ -47,11 +50,11 @@ class ConcreteScriptTask(OMOPScriptTask):
     """
     A barebones concrete implementation of the OMOPScriptTask protocol used for generating tasks
     """
+
     def render(self) -> str:
         rendered_args = [arg.render() for arg in self.arguments]
         rendered_args = " ".join([arg for arg in rendered_args if arg != ""])
         return f"Rscript {self.script_path} {rendered_args}"
-
 
 
 def build_omop_script_task(
@@ -82,6 +85,7 @@ def build_omop_script_task(
     type[OMOPScriptTask]
         A class for the task, instances of which will render commands as the arguments are specified
     """
+
     def new_init(self, **kwargs) -> None:
         self.script_path = script_path
         self.arguments = []

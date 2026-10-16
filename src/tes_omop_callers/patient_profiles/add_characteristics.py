@@ -3,8 +3,8 @@ from tes_omop_callers.script_args import (
     Flag,
     JsonSerialisedArg,
     MonthArg,
+    MonthDayArg,
     StringArg,
-    WeekdayArg,
 )
 
 
@@ -82,7 +82,7 @@ class AddCharacteristics(OMOPScriptTask):
             ),
             StringArg(argument_name="ageName", value=age_name),
             MonthArg(argument_name="ageMissingMonth", value=missing_month),
-            WeekdayArg(argument_name="ageMissingDay", value=missing_day),
+            MonthDayArg(argument_name="ageMissingDay", value=missing_day),
             Flag(argument_name="ageImposeMonth", value=age_impose_month),
             Flag(argument_name="ageImposeDay", value=age_impose_day),
             Flag(argument_name="addSex", value=add_sex),

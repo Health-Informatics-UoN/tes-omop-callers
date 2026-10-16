@@ -2,13 +2,19 @@ from typing import Any, Literal
 
 from ..builders.build_script_task import ArgDescription, build_omop_script_task
 from ..builders.docstring import build_docstring
-from ..script_args import JsonSerialisedArg, SimpleArg
+from ..script_args import JsonSerialisedArg, PositionalSingleString, SimpleArg
 
 
 class RLogicalArg(SimpleArg[Literal["TRUE", "FALSE"]]): ...
 
 
 args = [
+    ArgDescription(
+        python_arg_name="cohort_table_name",
+        argument_name="",
+        arg_class=PositionalSingleString,
+        description="Name of the cohort table"
+        ),
     ArgDescription(
         python_arg_name="output_path",
         argument_name="outputPath",

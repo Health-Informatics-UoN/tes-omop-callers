@@ -25,8 +25,8 @@ class IncidencePrevalence(OMOPScriptTask):
 
     def __init__(
         self,
+        denominator_cohort_name: str,
         outcome_cohort_name: str,
-        denominator_cohort_name: str | None = None,
         denominator_cohort_date_range: tuple[date, date] | None = (
             date(1900, 1, 1),
             date(2100, 1, 1),
@@ -36,7 +36,7 @@ class IncidencePrevalence(OMOPScriptTask):
         denominator_male: bool = False,
         denominator_female: bool = False,
         denominator_days_prior_observation: Annotated[int, Field(ge=0)] = 0,
-        requirement_interactions: bool = True,
+        requirement_interactions: bool = False,
         estimate_incidence_output_path: str | None = None,
         incidence_interval: IMInterval = "years",
         incidence_outcome_washout: Annotated[int, Field(ge=0)] = 0,
@@ -66,7 +66,7 @@ class IncidencePrevalence(OMOPScriptTask):
             Have a cohort of people assigned Female.
         denominator_days_prior_observation: Annotated[int, Field(ge=0)] = 0
             The number of days of prior observation required for an individual to start contributing time in a cohort.
-        requirement_interactions: bool = True
+        requirement_interactions: bool = False
             If True, cohorts will be created for all combinations of ageGroup, sex, and daysPriorObservation. If False, only the first value specified for the other factors will be used.
         estimate_incidence_output_path: str | None = None
             A path to which the output of estimateIncidence is saved.
@@ -91,6 +91,7 @@ class IncidencePrevalence(OMOPScriptTask):
         if denominator_cohort_date_range is None:
             denominator_cohort_date_range = (date(1900, 1, 1), date(2100, 1, 1))
         self.denominator_cohort_name = denominator_cohort_name
+        self.cohorts=[denominator_cohort_name]
         self.outcome_cohort_name = outcome_cohort_name
         self.arguments = [
             DatePair(
@@ -119,7 +120,7 @@ class IncidencePrevalence(OMOPScriptTask):
                 value=estimate_incidence_output_path,
             ),
             SimpleArg[IMInterval](
-                argument_name="incidence_interval", value=incidence_interval
+                argument_name="incidenceInterval", value=incidence_interval
             ),
             SimpleArg[Annotated[int, Field(ge=0)]](
                 argument_name="incidenceOutcomeWashout", value=incidence_outcome_washout

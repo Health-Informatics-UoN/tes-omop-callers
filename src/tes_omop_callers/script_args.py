@@ -4,6 +4,7 @@ import shlex
 from typing import Annotated, Literal, TypeVar
 
 from pydantic import BaseModel, Field
+from pydantic_core.core_schema import tagged_union_schema
 
 T = TypeVar("T")
 
@@ -68,6 +69,14 @@ class PositionalList[T](BaseArg[T]):
     value: T
 
 
+class PositionalSingleString(PositionalList[str]):
+    """
+    A class for a single positional argument
+    """
+
+    def render(self) -> str:
+        return self.value
+
 class PositionalStrings(PositionalList[list[str]]):
     """
     A class for positional arguments that are described with python strings
@@ -84,6 +93,7 @@ class StringArg(SimpleArg[str | None]): ...
 
 class MonthArg(SimpleArg[Annotated[int, Field(gt=0, le=12)] | None]): ...
 
+class MonthDayArg(SimpleArg[Annotated[int, Field(gt=0, le=31)] | None]): ...
 
 class WeekdayArg(SimpleArg[Annotated[int, Field(gt=0, le=7)] | None]): ...
 
@@ -100,7 +110,7 @@ class RequiredObservationArg(BaseModel):
     post: int = 0
 
     def render(self) -> str:
-        return f"--{self.argument_name}='[{self.prior},{self.post}]'"
+        return f"--{self.argument_name}={self.prior},{self.post}"
 
 
 class ConceptSet(BaseModel):

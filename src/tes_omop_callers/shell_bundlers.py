@@ -19,7 +19,7 @@ class ShellBundler(TaskBundler, Protocol):
             if task.must_run:
                 shell_string += f"; {task.render()}"
             else:
-                shell_string += f"&& {task.render()}"
+                shell_string += f" && {task.render()}"
 
         return shell_string
 

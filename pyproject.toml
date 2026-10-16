@@ -10,6 +10,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "five-safes-tes-workbench>=1.1.1",
     "pytest>=9.1.1",
 ]
 jupyter = [
